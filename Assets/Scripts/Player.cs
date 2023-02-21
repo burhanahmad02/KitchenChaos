@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 public class Player : MonoBehaviour
 {
     [SerializeField] private float moveSpeed = 7f;
@@ -9,6 +10,30 @@ public class Player : MonoBehaviour
     [SerializeField] LayerMask counterLayer;
 
     private bool isWalking;
+    private void Start()
+    {
+        gameInput.OnInteractEvent += GameInput_OnInteract;
+    }
+    private void GameInput_OnInteract(object sender, EventArgs e)
+    {
+        Vector2 inputVector = gameInput.VectorInputNormalized();
+        Vector3 moveDir = new Vector3(inputVector.x, 0f, inputVector.y);
+
+        if (moveDir != Vector3.zero)
+        {
+            lastInteractDir = moveDir;
+        }
+
+        float interactDistance = 2f;
+        if (Physics.Raycast(transform.position, moveDir, out RaycastHit raycastHit, interactDistance, counterLayer))
+        {
+            if (raycastHit.transform.TryGetComponent(out ClearCounter clearCounter))
+            {
+                //has clear counter
+                clearCounter.Interact();
+            }
+        }
+    }
     // Update is called once per frame
     private void Update()
     {
@@ -32,12 +57,7 @@ public class Player : MonoBehaviour
             if(raycastHit.transform.TryGetComponent(out ClearCounter clearCounter))
             {
                 //has clear counter
-                clearCounter.Interact();
             }
-        }
-        else
-        {
-            Debug.Log("-");
         }
     }
     private void HandleMovement()
