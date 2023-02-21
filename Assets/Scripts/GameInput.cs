@@ -6,7 +6,7 @@ using System;
 public class GameInput : MonoBehaviour
 {
     private PlayerInputActions playerInputActions;
-    public EventHandler OnInteractEvent;
+    public event EventHandler OnInteractEvent;
     private void Awake()
     {
         playerInputActions = new PlayerInputActions();

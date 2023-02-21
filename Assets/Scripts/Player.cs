@@ -9,6 +9,8 @@ public class Player : MonoBehaviour
     private Vector3 lastInteractDir;
     [SerializeField] LayerMask counterLayer;
 
+    private ClearCounter selectedCounter;
+
     private bool isWalking;
     private void Start()
     {
@@ -57,6 +59,7 @@ public class Player : MonoBehaviour
             if(raycastHit.transform.TryGetComponent(out ClearCounter clearCounter))
             {
                 //has clear counter
+
             }
         }
     }
