@@ -4,8 +4,9 @@ using UnityEngine;
 using System;
 public class Player : MonoBehaviour
 {
-    public event EventHandler OnSelectedCounterChanged;
-    public class OnSelectedCounterChangedEvenArgs : EventArgs
+    public static Player Instance { get; private set; }
+    public event EventHandler<OnSelectedCounterChangedEventArgs> OnSelectedCounterChanged;
+    public class OnSelectedCounterChangedEventArgs : EventArgs
     {
         public ClearCounter selectedCounter;
     }
@@ -18,7 +19,14 @@ public class Player : MonoBehaviour
     private Vector3 lastInteractDir;
     private ClearCounter selectedCounter;
 
- 
+    private void Awake()
+    {
+        if(Instance == null)
+        {
+            //Debug.LogError("Instance already exists");
+        }
+        Instance = this;
+    }
     private void Start()
     {
         gameInput.OnInteractEvent += GameInput_OnInteract;
@@ -67,7 +75,6 @@ public class Player : MonoBehaviour
         {
             SetSelectedCounter(null);
         }
-        Debug.Log(selectedCounter);
 
     }
     private void HandleMovement()
@@ -124,7 +131,7 @@ public class Player : MonoBehaviour
     private void SetSelectedCounter(ClearCounter selectedCounter)
     {
         this.selectedCounter = selectedCounter;
-        OnSelectedCounterChanged?.Invoke(this, new OnSelectedCounterChangedEvenArgs
+        OnSelectedCounterChanged?.Invoke(this, new OnSelectedCounterChangedEventArgs
         {
             selectedCounter = selectedCounter
         });
